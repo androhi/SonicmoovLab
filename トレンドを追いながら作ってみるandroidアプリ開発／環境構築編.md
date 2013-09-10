@@ -1,5 +1,9 @@
 # トレンドを追いながら作ってみるAndroidアプリ開発／環境構築編
 
+こんにちは。フロントエンジニアの下川です。  
+先月はマイコプラズマ肺炎という、通常大人はあまり発症しない病気になり、社会人になって初めて2週間も寝込んでしまいました。幸い家族には伝染らなかったのが、不幸中の幸いでした。  
+ということで、前回から間が空いてしまいましたので、Kit Katを食べながら前回のおさらいでも。
+  
 前回は開発環境準備編ということで、以下の3つを中心に進めていくこととしました。
 
 1. IDEにはAndroidStudioを使う
@@ -17,7 +21,9 @@
 #### 1. AndroidStudioをダウンロードする
 
 下記公式サイトより、.dmgファイルをダウンロードします。他にもwindows用に.exeファイル、Linux用に.tgzファイルが用意されてるようです。  
-http://developer.android.com/sdk/installing/studio.html
+[Android Developers - Getting Started with Android Studio](http://developer.android.com/sdk/installing/studio.html)
+
+![image-1](image-1.png "image-1")
 
 ちなみに、AndroidStudioにはAndroid SDKがバンドルされています。そのため、別途Android SDKをインストールしたり、パスを設定したりなどの手順は不要です。AndroidStudioさえインストールすれば、そのままアプリ開発が始められます。現状に比べて、かなり環境構築が楽になりそうですね。
 
@@ -28,6 +34,60 @@ http://developer.android.com/sdk/installing/studio.html
 注意点として、AndroidStudioではバンドルされているAndroid SDKを使おうとします。AndroidStudioが使うAndroid SDKは以下の場所にありますので、中を確認する際などは間違わないように気をつけなければいけません。  
 例：/Application/Android/Studio.app/sdk/
 
-#### 3. AndroidStudioを起動してパッケージをインストールする
+#### 3. AndroidStudioを起動して最新バージョンにアップデートする
 
-まずは、インストールしたAndroidStudioを起動します。初回起動時は、以下のようなWelcomeメッセージが出るようです。
+まずは、インストールしたAndroidStudioを起動します。（初回起動時は、ちょっと時間がかかると思います。）  
+ここで、ダウンロードしてきたAndroidStudioが最新バージョンでないと、以下のようなダイアログが表示されるかと思います。
+
+![image-1](image-1.png "image-1")
+
+Preview版において、必ずしも最新バージョンがいいとは限りませんが、それでもいろいろな更新が反映されることになるので、特に重要な理由がなければ最新バージョンにアップデートします。そのあたりの判断は、下記サイトで確認するのがいいと思います。
+
+[Android Tools Project Site](http://tools.android.com/recent)
+
+最新バージョンへのアップデートが完了すると、AndroidStudioが再度起動しますので、これでアプリ開発が出来る環境が出来ました。さっそく新規プロジェクトを作成したいところですが、その前に今回使用する通信ライブラリの準備も済ませておきたいと思います。
+
+#### ※補足
+
+AndroidStudioでは、前述したようにバンドルされたAndroidSDKを使用します。そのため、以前にインストールしたAndroidSDKがあり、様々なAPIバージョンをダウンロード済みであっても、それらは使うことが出来ません。  
+今回構築している環境では、バンドルされているAndroidSDK Managerを経由して、必要なSDK Platformなり拡張ライブラリなりを、新たにダウンロードする必要があります。  
+ちなみに、本記事執筆時点(2013/09/09)でバンドルされているSDK Platformは、Android 4.2.2(API Level 17)のみとなっています。
+
+## Volleyライブラリをダウンロードする
+
+今回使用する通信ライブラリのVolleyですが、バイナリでの配布は行なっていないようです。そのため導入にあたっては、ソースコードからビルドして利用する必要があります。  
+ソースコードから〜というと、なんだか面倒くさく感じるかもしれませんが、Volleyは容量も大きくないですし、やってみると簡単です。あっさり終わります。手順としても、以下の2ステップだけです。
+
+#### 1. Gitリポジトリからソースコードをダウンロードする
+
+適当な場所で構いませんので、ターミナルから以下のコマンドを実行します。  
+指定したリポジトリから、volleyのソースコードをローカルにコピー出来ます。普段Gitを使っている方には、お馴染みの手順ですね。Gitを触ったことが無い方は、とりあえず実行してみて、良い機会ですのでGitについて調べてみてはいかがでしょうか？
+
+```
+$ git clone https://android.googlesource.com/platform/frameworks/volley
+```
+
+#### 2. ライブラリファイル(.jar)を生成する
+
+これから作成するAndroidアプリで、volleyをライブラリとして使用するために、アーカイブを作成しておきます。  
+以下のコマンドを実行し、Antを使ってJAR(Java Archive)ファイルを作成します。
+
+```
+$ cd volley
+$ android update project -p .
+$ ant jar
+$ ls -l bin/volley.jar
+```
+
+これで、binフォルダの中にJARファイルが、作成されたと思います。
+
+## まとめ
+
+今回は環境構築がメインということもあり、特に難しい部分は無かったと思います。  
+特にIDEであるAndroidStudioは、Androidアプリ開発に特化しているだけあり、面倒な初期設定がほとんどなく、以前はダウンロードが必須だったSDK Platformまでバンドルされているので、環境構築の作業がとても楽になりました。  
+
+次回は、以下のような流れで進めてみたいと思います。
+
+1. 新規プロジェクト作成
+2. Volleyライブラリ設定
+3. 試しにVolleyで通信してみる
